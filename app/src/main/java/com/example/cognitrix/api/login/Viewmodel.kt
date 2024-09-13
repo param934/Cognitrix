@@ -13,16 +13,46 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
 
     private val _user = MutableStateFlow<UserEntity?>(null)
     val user: StateFlow<UserEntity?> = _user
+    private val _loginError = MutableStateFlow<String?>(null)
+    val loginError: StateFlow<String?> = _loginError
+
+    private val _registerError = MutableStateFlow<String?>(null)
+    val registerError: StateFlow<String?> = _registerError
+    private val _isRegistrationSuccessful = MutableStateFlow<Boolean>(false)
+    val isRegistrationSuccessful: StateFlow<Boolean> = _isRegistrationSuccessful
 
     fun login(username: String, password: String) {
         viewModelScope.launch {
+
             val result = repository.login(username, password)
-            print(result.toString())
+//            print("output "+result.toString())
             if (result.isSuccess) {
                 _user.value = result.getOrNull()
 
             } else {
+                _loginError.value = result.exceptionOrNull()?.message
 
+            }
+        }
+    }
+    fun fetchUser() {
+        viewModelScope.launch {
+            val fetchedUser = repository.getUser()
+            _user.emit(fetchedUser)
+            println("dataaaaaaaaaa "+_user.value)
+        }
+    }
+    // Registration function
+    fun registerUser(registerRequest: RegisterRequest) {
+        viewModelScope.launch {
+            val result = repository.register(registerRequest)
+            if (result.isSuccess) {
+                _user.value=result.getOrNull()
+                println("sucess")
+                _isRegistrationSuccessful.value = true
+            } else {
+                _registerError.value = result.exceptionOrNull()?.message
+                println(result.exceptionOrNull()?.message)
             }
         }
     }

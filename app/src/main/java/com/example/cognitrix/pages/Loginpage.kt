@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,7 +38,7 @@ import com.example.cognitrix.api.login.UserViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginPage(viewModel: UserViewModel) {
+fun LoginPage(viewModel: UserViewModel,onNavigateToSignUp:()->Unit) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
             title = { Text(text = "Login", fontWeight = FontWeight.Bold) },
@@ -46,6 +47,9 @@ fun LoginPage(viewModel: UserViewModel) {
             )
         )
     }) {
+        val loginError by viewModel.loginError.collectAsState()
+        val user by viewModel.user.collectAsState()
+
         var username by remember {
             mutableStateOf("")
         }
@@ -84,23 +88,32 @@ fun LoginPage(viewModel: UserViewModel) {
                     )
                     OutlinedTextField(
                         value = username,
-                        onValueChange = {username=it},
-                        label = { Text("Email*") },
+                        onValueChange = { username = it },
+                        label = { Text("Username*") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp)
                     )
                     OutlinedTextField(
                         value = password,
-                        onValueChange = {password=it},
+                        onValueChange = { password = it },
                         label = { Text("Password*") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 16.dp),
                         visualTransformation = PasswordVisualTransformation()
                     )
+                    if (loginError != null) {
+                        Text(
+                            text = loginError!!,
+                            color = Color.Red,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+                    }
                     Button(
-                        onClick = { viewModel.login(username, password)
+                        onClick = {
+                            viewModel.login(username, password)
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -123,7 +136,7 @@ fun LoginPage(viewModel: UserViewModel) {
                         }
                         Spacer(modifier = Modifier.width(16.dp))
                         Button(
-                            onClick = { /* Handle signup */ },
+                            onClick = { onNavigateToSignUp() },
                             modifier = Modifier.weight(1f),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0D9A90))
                         ) {
@@ -132,7 +145,16 @@ fun LoginPage(viewModel: UserViewModel) {
                     }
                 }
             }
-
+            if (user != null) {
+                // You can implement navigation or show a success message here
+                Text(
+                    text = "Welcome ${user?.username}!",
+                    color = Color.Green,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(16.dp)
+                )
+                // Implement further navigation or state changes here
+            }
         }
     }
 }

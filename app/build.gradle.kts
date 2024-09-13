@@ -51,12 +51,14 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.runtime.ktx)
     val room_version = "2.6.1"
     implementation ("androidx.room:room-runtime:$room_version")
     implementation ("androidx.room:room-ktx:$room_version") // Add this line for Kotlin extensions
     annotationProcessor ("androidx.room:room-compiler:$room_version")
-
-    // To use Kotlin annotation processing tool (kapt)
+    implementation ("androidx.compose.material:material-icons-core:1.0.0")
+    implementation ("androidx.compose.material:material-icons-extended:1.0.0")
     kapt("androidx.room:room-compiler:$room_version")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -14,8 +14,8 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: UserEntity)
 
-    @Query("SELECT * FROM user WHERE username = :username LIMIT 1")
-    suspend fun getUser(username: String): UserEntity?
+    @Query("SELECT * FROM user LIMIT 1")
+    suspend fun getUser(): UserEntity?
 
     @Query("UPDATE user SET accessToken = :accessToken WHERE username = :username")
     suspend fun updateAccessToken(username: String, accessToken: String)

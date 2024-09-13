@@ -11,6 +11,7 @@ data class UserEntity(
     val lastName: String,
     val email: String,
     val address: String,
+    val mobile: String,
     val accessToken: String,
     val refreshToken: String
 )
