@@ -239,6 +239,7 @@ fun SignUpPage(viewModel: UserViewModel, navController: NavController) {
                             .padding(bottom = 8.dp)
                             .align(Alignment.Start)
                     )
+                    //
                     OutlinedTextField(
                         value = phoneNumber,
                         onValueChange = { phoneNumber = it },
