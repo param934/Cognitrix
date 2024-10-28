@@ -1,20 +1,13 @@
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.mutableStateOf
+package com.example.cognitrix.pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.rounded.Email
@@ -32,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
@@ -43,14 +35,10 @@ import com.example.cognitrix.api.login.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpPage(viewModel: UserViewModel, navController: NavController) {
+fun LoginPage(viewModel: UserViewModel, navController: NavController){
     Scaffold(topBar = {}) {
-        var fullName by remember { mutableStateOf("") }
         var email by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
-        var phoneNumber by remember { mutableStateOf("") }
-        var discordId by remember { mutableStateOf("") }
-        var passwordVisible by remember { mutableStateOf(false) }
         var isStudent by remember { mutableStateOf(true) } // Toggle state for Student/Professor
 
         Column(
@@ -62,7 +50,8 @@ fun SignUpPage(viewModel: UserViewModel, navController: NavController) {
         ) {
             // Toggle for Student and Professor
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
                 // Student Section
@@ -114,20 +103,22 @@ fun SignUpPage(viewModel: UserViewModel, navController: NavController) {
                 }
             }
 
+
             Box(
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Full Name Input
                     Text(
                         text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontSize = 20.sp)) {
-                                append("Full Name")
+                            withStyle(style = SpanStyle(fontSize = 20.sp)) { // Increase text size
+                                append("Email") // Add the main text
                             }
-                            withStyle(style = SpanStyle(color = Color.Red, fontSize = 20.sp)) {
+                            withStyle(style = SpanStyle(color = Color.Red, fontSize = 20.sp)) { // Red color for the asterisk
                                 append("*")
                             }
                         },
@@ -135,61 +126,36 @@ fun SignUpPage(viewModel: UserViewModel, navController: NavController) {
                             .padding(bottom = 8.dp)
                             .align(Alignment.Start)
                     )
-                    OutlinedTextField(
-                        value = fullName,
-                        onValueChange = { fullName = it },
-                        placeholder = { Text("Enter Full Name") },
-                        leadingIcon = {
-                            Icon(imageVector = Icons.Outlined.AccountCircle , contentDescription = "Full Name")
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 24.dp),
-                        colors = TextFieldDefaults.textFieldColors(
-                            containerColor = Color.Transparent,
-                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                            unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary
-                        )
-                    )
-
-                    // Email Input
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontSize = 20.sp)) {
-                                append("Email")
-                            }
-                            withStyle(style = SpanStyle(color = Color.Red, fontSize = 20.sp)) {
-                                append("*")
-                            }
-                        },
-                        modifier = Modifier
-                            .padding(bottom = 8.dp)
-                            .align(Alignment.Start)
-                    )
+                    // Email input
                     OutlinedTextField(
                         value = email,
-                        onValueChange = { email = it },
+                        onValueChange = { email= it },
                         placeholder = { Text("Enter Email") },
-                        leadingIcon = {
-                            Icon(imageVector = Icons.Default.Email, contentDescription = "Email")
-                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 24.dp),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Email,
+                                contentDescription = "Email Icon",
+                                tint = MaterialTheme.colorScheme.tertiary // Set the icon color
+                            )
+                        },
                         colors = TextFieldDefaults.textFieldColors(
-                            containerColor = Color.Transparent,
-                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                            containerColor = Color.Transparent, // Removes the background color
+                            focusedIndicatorColor = MaterialTheme.colorScheme.primary, // Hides the underline when focused
                             unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary
+
                         )
                     )
 
-                    // Password Input
+                    // Password input
                     Text(
                         text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontSize = 20.sp)) {
-                                append("Password")
+                            withStyle(style = SpanStyle(fontSize = 20.sp)) { // Increase text size
+                                append("Password") // Add the main text
                             }
-                            withStyle(style = SpanStyle(color = Color.Red, fontSize = 20.sp)) {
+                            withStyle(style = SpanStyle(color = Color.Red, fontSize = 20.sp)) { // Red color for the asterisk
                                 append("*")
                             }
                         },
@@ -197,121 +163,86 @@ fun SignUpPage(viewModel: UserViewModel, navController: NavController) {
                             .padding(bottom = 8.dp)
                             .align(Alignment.Start)
                     )
+                    var passwordVisible by remember { mutableStateOf(false) } // State to track password visibility
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
                         placeholder = { Text("Enter Password") },
-                        leadingIcon = {
-                            Icon(imageVector = Icons.Default.Lock, contentDescription = "Password")
-                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp),
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Lock,
+                                contentDescription = "Password Icon",
+                                tint = MaterialTheme.colorScheme.tertiary // Set the icon color
+                            )
+                        },
                         trailingIcon = {
+                            // Icon to toggle password visibility
                             Icon(
                                 imageVector = if (passwordVisible) Icons.Filled.CheckCircle else Icons.Filled.Lock,
                                 contentDescription = if (passwordVisible) "Hide Password" else "Show Password",
-                                modifier = Modifier.clickable { passwordVisible = !passwordVisible },
-                                tint = MaterialTheme.colorScheme.tertiary
+                                modifier = Modifier.clickable { passwordVisible = !passwordVisible }, // Toggle visibility on click
+                                tint = MaterialTheme.colorScheme.tertiary // Set the icon color
                             )
                         },
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         colors = TextFieldDefaults.textFieldColors(
-                            containerColor = Color.Transparent,
-                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                            unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary
-                        )
-                    )
-                    Text(
-                        text = "Your Password must be at least 8 characters long.",
-                        fontSize = 12.sp,
-                        color = Color.Gray,
-                        modifier = Modifier
-                            .align(Alignment.Start)
-                            .padding(top = 4.dp, bottom = 24.dp)
-                    )
-
-                    // Phone Number Input
-                    Text(
-                        text = "Phone Number",
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(bottom = 8.dp)
-                            .align(Alignment.Start)
-                    )
-                    OutlinedTextField(
-                        value = phoneNumber,
-                        onValueChange = { phoneNumber = it },
-                        placeholder = { Text("Enter Phone Number") },
-                        leadingIcon = {
-                            Icon(imageVector = Icons.Default.Call, contentDescription = "Phone Number")
-                        },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 24.dp),
-                        colors = TextFieldDefaults.textFieldColors(
-                            containerColor = Color.Transparent,
-                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                            containerColor = Color.Transparent, // Removes the background color
+                            focusedIndicatorColor = MaterialTheme.colorScheme.primary, // Hides the underline when focused
                             unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary
                         )
                     )
 
-                    // Discord ID Input
-                    Text(
-                        text = "Discord ID",
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(bottom = 8.dp)
-                            .align(Alignment.Start)
-                    )
-                    OutlinedTextField(
-                        value = discordId,
-                        onValueChange = { discordId = it },
-                        placeholder = { Text("Enter Discord ID") },
-                        leadingIcon = {
-                            Icon(imageVector = Icons.Default.Home, contentDescription = "Discord ID")
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 24.dp),
-                        colors = TextFieldDefaults.textFieldColors(
-                            containerColor = Color.Transparent,
-                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                            unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary
-                        )
-                    )
+                    // Forgot password text
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End // Aligns items to the end (right side)
+                    ) {
+                        TextButton(onClick = { /* Handle forgot password */ }) {
+                            Text(
+                                text = "Forgot password?",
+                                color = Color.Blue,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Sign Up button
+                    // Login button
                     Button(
-                        onClick = { /* Handle sign up */ },
+                        onClick = { viewModel.login(email, password) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 16.dp),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("Sign Up")
+                        Text("Log in")
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Login section
+                    // Sign Up section
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(text = "Already registered? Please")
-                        TextButton(onClick = { navController.navigate("login") }) { // Navigate to login
+                        Text(text = "Not Registered? Please")
+                        TextButton(onClick = {
+                            navController.navigate("signup") }) {
                             Text(
-                                text = "Login",
+                                text = "Sign Up",
                                 color = Color.Blue
                             )
                         }
                     }
                 }
             }
+
         }
     }
 }
+

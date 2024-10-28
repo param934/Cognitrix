@@ -1,16 +1,21 @@
 package com.example.cognitrix
+
+import SignUpPage
 import android.annotation.SuppressLint
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.navigation.compose.composable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavHostController
+import androidx.navigation.NavHost
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.cognitrix.api.login.RetrofitInstance
@@ -19,12 +24,13 @@ import com.example.cognitrix.api.login.UserViewModelFactory
 import com.example.cognitrix.db.AppDatabase
 import com.example.cognitrix.db.UserRepository
 import com.example.cognitrix.pages.LoginPage
-import com.example.cognitrix.pages.SignUpScreen
-import com.example.cognitrix.pages.dasboard
 import com.example.cognitrix.ui.theme.CognitrixTheme
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     private lateinit var userViewModel: UserViewModel
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -37,15 +43,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CognitrixTheme {
-                val navController = rememberNavController()
-                userViewModel.fetchUser()
-
-                val user by userViewModel.user.collectAsState()
-
-                val startDestination = if (user != null) "Home" else "login"
-
+                val navController = rememberNavController() // Initialize NavController
                 Scaffold(modifier = Modifier.fillMaxSize()) {
-                    NavigationComponent(navController = navController, viewModel = userViewModel, startDestination = startDestination) // Call the navigation component
+                    AppNavigation(navController = navController, viewModel = userViewModel)
                 }
             }
         }
@@ -53,35 +53,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NavigationComponent(navController: NavHostController, viewModel: UserViewModel, startDestination: String) {
-
-    NavHost(navController = navController, startDestination = startDestination) {
+fun AppNavigation(navController: NavHostController, viewModel: UserViewModel) {
+    NavHost(navController = navController, startDestination = "login") {
         composable("login") {
-            LoginPage(onNavigateToSignUp = {
-                navController.navigate("signup") // Navigate to SignUp screen
-            }, viewModel = viewModel)
+            LoginPage(viewModel = viewModel, navController = navController)
         }
         composable("signup") {
-            SignUpScreen { data ->
-                viewModel.registerUser(data)
-                navController.navigate("Home")
-            }
-        }
-        composable("Home") {
-            dasboard().screen(viewModel = viewModel)
-
-//            // Check if user session expires
-//            LaunchedEffect(viewModel) {
-//                while (true) {
-//                    delay(10000L) // Check every 10 seconds (or adjust as needed)
-//                    if (viewModel.user.value == null) {
-//                        // Session expired or token revoked, navigate to login
-//                        navController.navigate("login") {
-//                            popUpTo("Home") { inclusive = true } // Clear back stack
-//                        }
-//                    }
-//                }
-//            }
+            SignUpPage(viewModel = viewModel, navController = navController)
         }
     }
 }
